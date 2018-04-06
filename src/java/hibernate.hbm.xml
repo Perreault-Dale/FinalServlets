@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+  <class dynamic-insert="false" dynamic-update="false" mutable="true" name="FinalServlets.model.Employee" optimistic-lock="version" polymorphism="implicit" select-before-update="false" table="employee">
+      <id name="empNumber" column="EMP_NUMBER">
+          <generator class="assigned"/>
+      </id>
+      <property name="team_id" type="integer" column="TEAM_ID"/>
+      <property name="firstName" type="string" column="FIRST_NAME"/>
+      <property name="lastName" type="string" column="LAST_NAME"/>
+      <property name="title" type="string" column="TITLE"/>
+      <property name="hireDate" type="date" column="HIRE_DATE"/>
+  </class>
+  <class dynamic-insert="false" dynamic-update="false" mutable="true" name="FinalServlets.model.Employee" optimistic-lock="version" polymorphism="implicit" select-before-update="false" table="team">
+      <id name="id" column="ID">
+          <generator class="assigned"/>
+      </id>
+      <property name="name" type="string" column="NAME"/>
+      <property name="desc" type="string" column="DESC"/>
+  </class>
+</hibernate-mapping>
