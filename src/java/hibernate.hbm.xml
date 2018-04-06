@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
-  <class dynamic-insert="false" dynamic-update="false" mutable="true" name="FinalServlets.model.Employee" optimistic-lock="version" polymorphism="implicit" select-before-update="false" table="employee">
+  <class dynamic-insert="false" dynamic-update="false" mutable="true" name="model.Employee" optimistic-lock="version" polymorphism="implicit" select-before-update="false" table="employee">
       <id name="empNumber" column="EMP_NUMBER">
           <generator class="assigned"/>
       </id>
@@ -11,11 +11,11 @@
       <property name="title" type="string" column="TITLE"/>
       <property name="hireDate" type="date" column="HIRE_DATE"/>
   </class>
-  <class dynamic-insert="false" dynamic-update="false" mutable="true" name="FinalServlets.model.Employee" optimistic-lock="version" polymorphism="implicit" select-before-update="false" table="team">
+  <class dynamic-insert="false" dynamic-update="false" mutable="true" name="model.Team" optimistic-lock="version" polymorphism="implicit" select-before-update="false" table="team">
       <id name="id" column="ID">
           <generator class="assigned"/>
       </id>
-      <property name="name" type="string" column="NAME"/>
-      <property name="desc" type="string" column="DESC"/>
+      <property name="name" type="string" column="TEAM_NAME"/>
+      <property name="desc" type="string" column="DESCRIPTION"/>
   </class>
 </hibernate-mapping>

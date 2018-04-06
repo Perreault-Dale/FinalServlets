@@ -85,6 +85,14 @@ public class Employee implements Serializable, Comparable<Employee> {
         this.hireDate = hireDate;
     }
 
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
     @Override
     public int hashCode() {
         int hash = 7;
