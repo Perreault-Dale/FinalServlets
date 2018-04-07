@@ -19,6 +19,7 @@ public class ListTeams implements Handler {
     public String execute() {
         List<Team> tl = TeamControl.getRecords();
         if (tl.isEmpty()) { tl = TeamControl.InitialLoad(); }
-        return tl.toString();
+        String html = TeamControl.formatHtml(tl);
+        return html;
     }
 }

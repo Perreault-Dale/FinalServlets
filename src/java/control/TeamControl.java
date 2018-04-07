@@ -7,9 +7,9 @@ package control;
 
 import org.hibernate.Session; 
 import org.hibernate.SessionFactory;
-import org.hibernate.cfg.Configuration;
 import java.util.Arrays;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.Team;
@@ -21,19 +21,10 @@ import org.hibernate.Hibernate;
  */
 public class TeamControl {
     
-    private static SessionFactory factory;
-    
-    protected static void setUp() throws Exception {
-        factory = new Configuration().configure().buildSessionFactory();
-    }
-    
-    protected static void tearDown() throws Exception {
-        factory.close();
-    }
-    
     public static void saveRecords(List<Team> es) {
+        SessionFactory factory = null;
         try {
-            setUp();
+            factory = DbControl.setUp();
         } catch (Exception ex) {
             Logger.getLogger(Hibernate.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -51,23 +42,24 @@ public class TeamControl {
         session.close();
         System.out.println("Records stored successfully.");
         try {
-            tearDown();
+            DbControl.tearDown(factory);
         } catch (Exception ex) {
             Logger.getLogger(Hibernate.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
     public static List<Team> getRecords() {
+        SessionFactory factory = null;
         try {
-            setUp();
+            factory = DbControl.setUp();
         } catch (Exception ex) {
             Logger.getLogger(Hibernate.class.getName()).log(Level.SEVERE, null, ex);
         }
         Session session = factory.openSession();
         session.beginTransaction();
-        List<Team> tl = session.createQuery("FROM Team T ORDER BY T.name").list();
+        List<Team> tl = session.createQuery("FROM Team T ORDER BY T.id").list();
         try {
-            tearDown();
+            DbControl.tearDown(factory);
         } catch (Exception ex) {
             Logger.getLogger(Hibernate.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -83,6 +75,37 @@ public class TeamControl {
         List<Team> tl = Arrays.asList(ta);
         saveRecords(tl);
         return tl;
+    }
+    
+    public static String formatHtml(List<Team> tl) {
+        String html = "<html>\n" +
+        "    <head>\n" +
+        "        <title>Teams List</title>\n" +
+        "        <meta charset=\"UTF-8\">\n" +
+        "        <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n" +
+        "    </head>\n" +
+        "    <body>\n" +
+        "        <h1>Teams List</h1>\n" +
+        "        <div>\n" +
+        "        <a href=\".CreateTeam\">Create Team</a>\n" +
+        "        <table>\n" +
+        "        <th>ID</th><th>Name</th><th>Description</th>\n";
+        
+        ListIterator<Team> li = tl.listIterator();
+        while (li.hasNext()) {
+            Team t = li.next();
+            html += "        <tr><td>" + t.getId() + "</td><td>" + 
+                    t.getName() + "</td><td>" + 
+                    t.getDesc() + "</td><td>" +
+                    "<a href=\".UpdateTeam/?id=" + t.getId() + "\">Update Team</a></td><td>" + 
+                    "<a href=\".DeleteTeam/?id=" + t.getId() + "\">Delete Team</a><td></tr>\n";
+        }
+        html += "        </table>\n" +
+        "        </div>\n" +
+        "    </body>\n" +
+        "</html>";
+        
+        return html;
     }
     
 }
