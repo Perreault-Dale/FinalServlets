@@ -14,6 +14,7 @@ import java.util.ListIterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.Team;
+import org.hibernate.Query;
 
 /**
  *
@@ -46,6 +47,61 @@ public class TeamControl {
         } catch (Exception ex) {
             Logger.getLogger(Hibernate.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    
+    public static void updateRecords(Team t1) {
+        SessionFactory factory = null;
+        try {
+            factory = DbControl.setUp();
+        } catch (Exception ex) {
+            Logger.getLogger(Hibernate.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        Session session = factory.openSession();
+        session.beginTransaction();
+        try {
+            Team team = (Team) session.createQuery("FROM Team T WHERE T.id=" + t1.getId()).uniqueResult();
+            team.setName(t1.getName());
+            team.setDesc(t1.getDesc());
+            session.save(team);
+        }
+        catch (Exception ex) {
+            Logger.getLogger(Hibernate.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        session.getTransaction().commit();
+        session.close();
+        System.out.println("Record updated successfully.");
+        try {
+            DbControl.tearDown(factory);
+        } catch (Exception ex) {
+            Logger.getLogger(Hibernate.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public static int deleteRecords(int id) {
+        SessionFactory factory = null;
+        int res = 0;
+        try {
+            factory = DbControl.setUp();
+        } catch (Exception ex) {
+            Logger.getLogger(Hibernate.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        Session session = factory.openSession();
+        session.beginTransaction();
+        try {
+            res = session.createQuery("DELETE FROM Team T WHERE T.id=" + id).executeUpdate();
+        }
+        catch (Exception ex) {
+            Logger.getLogger(Hibernate.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        session.getTransaction().commit();
+        session.close();
+        try {
+            DbControl.tearDown(factory);
+        } catch (Exception ex) {
+            Logger.getLogger(Hibernate.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return res;
     }
     
     public static List<Team> getRecords() {

@@ -50,6 +50,63 @@ public class EmployeeControl {
         }
     }
     
+    public static void updateRecords(Employee e1) {
+        SessionFactory factory = null;
+        try {
+            factory = DbControl.setUp();
+        } catch (Exception ex) {
+            Logger.getLogger(Hibernate.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        Session session = factory.openSession();
+        session.beginTransaction();
+        try {
+            Employee e = (Employee) session.createQuery("FROM Employee E WHERE E.empNumber=" + e1.getEmpNumber()).uniqueResult();
+            e.setFirstName(e1.getFirstName());
+            e.setLastName(e1.getLastName());
+            e.setTitle(e1.getTitle());
+            e.setTeam_id(e1.getTeam_id());
+            e.setHireDate(e1.getHireDate());
+            session.save(e);
+        }
+        catch (Exception ex) {
+            Logger.getLogger(Hibernate.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        session.getTransaction().commit();
+        session.close();
+        System.out.println("Records stored successfully.");
+        try {
+            DbControl.tearDown(factory);
+        } catch (Exception ex) {
+            Logger.getLogger(Hibernate.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public static int deleteRecords(int id) {
+        SessionFactory factory = null;
+        int res = 0;
+        try {
+            factory = DbControl.setUp();
+        } catch (Exception ex) {
+            Logger.getLogger(Hibernate.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        Session session = factory.openSession();
+        session.beginTransaction();
+        try {
+            res = session.createQuery("DELETE FROM Employee E WHERE E.empNumber=" + id).executeUpdate();
+        }
+        catch (Exception ex) {
+            Logger.getLogger(Hibernate.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        session.getTransaction().commit();
+        session.close();
+        try {
+            DbControl.tearDown(factory);
+        } catch (Exception ex) {
+            Logger.getLogger(Hibernate.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return res;
+    }
+    
     public static List<Employee> getRecords() {
         SessionFactory factory = null;
         try {
@@ -141,7 +198,7 @@ public class EmployeeControl {
         "        <p>First Name: " + tl.getFirstName() + "\n" +
         "        <p>Last Name: " + tl.getLastName() + "\n" + 
         "        <p>Title: " + tl.getTitle() + "\n" +
-        "        <p>Hire Date: " + new SimpleDateFormat("dd-MM-yyyy").format(tl.getHireDate()) + "\n" +
+        "        <p>Hire Date: " + new SimpleDateFormat("MM/dd/yyyy").format(tl.getHireDate()) + "\n" +
         "        <p><a href=\"List?q=employee\">Back To List</a></td><td>" + 
         "        <p><a href=\"UpdateEmployee?id=" + tl.getEmpNumber() + "\">Update Employee</a></td><td>" + 
         "        <p><a href=\"DeleteEmployee?id=" + tl.getEmpNumber() + "\">Delete Employee</a><td></tr>\n" + 
