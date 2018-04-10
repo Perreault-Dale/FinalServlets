@@ -37,9 +37,10 @@ public class Employee implements Serializable, Comparable<Employee> {
     }
     
     //Custom constructor
-    public Employee(String firstName, String lastName, Integer empNumber, Integer team_id, Date hireDate) {
+    public Employee(String firstName, String lastName, String title, Integer empNumber, Integer team_id, Date hireDate) {
         this.firstName = firstName;
         this.lastName = lastName;
+        this.title = title;
         this.empNumber = empNumber;
         this.team_id = team_id;
         this.hireDate = hireDate;

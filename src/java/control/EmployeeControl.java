@@ -5,23 +5,25 @@
  */
 package control;
 
+import java.text.SimpleDateFormat;
 import org.hibernate.Session; 
 import org.hibernate.SessionFactory;
 import org.hibernate.Hibernate;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import model.Team;
+import model.Employee;
 
 /**
  *
  * @author Dale
  */
-public class TeamControl {
+public class EmployeeControl {
     
-    public static void saveRecords(List<Team> es) {
+    public static void saveRecords(List<Employee> es) {
         SessionFactory factory = null;
         try {
             factory = DbControl.setUp();
@@ -48,7 +50,7 @@ public class TeamControl {
         }
     }
     
-    public static List<Team> getRecords() {
+    public static List<Employee> getRecords() {
         SessionFactory factory = null;
         try {
             factory = DbControl.setUp();
@@ -57,7 +59,7 @@ public class TeamControl {
         }
         Session session = factory.openSession();
         session.beginTransaction();
-        List<Team> tl = session.createQuery("FROM Team T ORDER BY T.id").list();
+        List<Employee> tl = session.createQuery("FROM Employee T ORDER BY T.empNumber").list();
         try {
             DbControl.tearDown(factory);
         } catch (Exception ex) {
@@ -66,7 +68,7 @@ public class TeamControl {
         return tl;
     }
     
-    public static Team getRecords(int id) {
+    public static Employee getRecords(int id) {
         SessionFactory factory = null;
         try {
             factory = DbControl.setUp();
@@ -75,49 +77,49 @@ public class TeamControl {
         }
         Session session = factory.openSession();
         session.beginTransaction();
-        Team t1 = (Team) session.createQuery("FROM Team WHERE id = " + id).uniqueResult();
+        Employee e1 = (Employee) session.createQuery("FROM Employee WHERE empNumber = " + id).uniqueResult();
         try {
             DbControl.tearDown(factory);
         } catch (Exception ex) {
             Logger.getLogger(Hibernate.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return t1;
+        return e1;
     }
     
-    public static List<Team> InitialLoad() {
-        Team[] ta = new Team[3];
-        ta[0] = new Team(1,"SLT","Senior Leadership");
-        ta[1] = new Team(2,"Sales","Sales and Marketing");
-        ta[2] = new Team(3,"Hybrid","Service Delivery");
+    public static List<Employee> InitialLoad() {
+        Employee[] ea = new Employee[3];
+        ea[0] = new Employee("John","Billings","Chief Executive Officer",1001,1,new Date(110,6,13));
+        ea[1] = new Employee("Susan","Blakeley","Field Sales Executive",1321,2,new Date(114,7,21));
+        ea[2] = new Employee("Aaron","Jenkins","Windows Systems Engineer",1285,3,new Date(112,12,18));
         
-        List<Team> tl = Arrays.asList(ta);
+        List<Employee> tl = Arrays.asList(ea);
         saveRecords(tl);
         return tl;
     }
     
-    public static String formatHtml(List<Team> tl) {
+    public static String formatHtmlList(List<Employee> tl) {
         String html = "<html>\n" +
         "    <head>\n" +
-        "        <title>Teams List</title>\n" +
+        "        <title>Employees List</title>\n" +
         "        <meta charset=\"UTF-8\">\n" +
         "        <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n" +
         "    </head>\n" +
         "    <body>\n" +
-        "        <h1>Teams List</h1>\n" +
+        "        <h1>Employees List</h1>\n" +
         "        <div>\n" +
-        "        <a href=\"CreateTeam\">Create Team</a>\n" +
+        "        <a href=\"CreateEmployee\">Create Employee</a>\n" +
         "        <table>\n" +
-        "        <th>ID</th><th>Name</th><th>Description</th>\n";
+        "        <th>First Name</th><th>Last Name</th><th>Title</th>\n";
         
-        ListIterator<Team> li = tl.listIterator();
+        ListIterator<Employee> li = tl.listIterator();
         while (li.hasNext()) {
-            Team t = li.next();
-            html += "        <tr><td>" + t.getId() + "</td><td>" + 
-                    t.getName() + "</td><td>" + 
-                    t.getDesc() + "</td><td>" +
-                    "<a href=\"TeamDetail?id=" + t.getId() + "\">Team Members</a></td><td>" + 
-                    "<a href=\"UpdateTeam?id=" + t.getId() + "\">Update Team</a></td><td>" + 
-                    "<a href=\"DeleteTeam?id=" + t.getId() + "\">Delete Team</a><td></tr>\n";
+            Employee t = li.next();
+            html += "        <tr><td>" + t.getFirstName() + "</td><td>" + 
+                    t.getLastName() + "</td><td>" + 
+                    t.getTitle() + "</td><td>" +
+                    "<a href=\"EmployeeDetail?id=" + t.getEmpNumber() + "\">View Details</a></td><td>" + 
+                    "<a href=\"UpdateEmployee?id=" + t.getEmpNumber() + "\">Update Employee</a></td><td>" + 
+                    "<a href=\"DeleteEmployee?id=" + t.getEmpNumber() + "\">Delete Employee</a><td></tr>\n";
         }
         html += "        </table>\n" +
         "        </div>\n" +
@@ -127,22 +129,24 @@ public class TeamControl {
         return html;
     }
     
-    public static String formatHtmlSingle(Team tl) {
+    public static String formatHtmlSingle(Employee tl) {
         String html = "<html>\n" +
         "    <head>\n" +
-        "        <title>Team Members - " + tl.getName() + "</title>\n" +
+        "        <title>Employee Detail - " + tl.getFirstName() + " " + tl.getLastName() + "</title>\n" +
         "        <meta charset=\"UTF-8\">\n" +
         "        <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n" +
         "    </head>\n" +
         "    <body>\n" +
-        "        <h1>Team Detail</h1>\n" +
+        "        <h1>Employee Detail</h1>\n" +
         "        <div>\n" +
-        "        <a href=\"CreateTeam\">Create Team</a>\n" +
-        "        <p>Name: " + tl.getName() + "\n" +
-        "        <p>Description: " + tl.getDesc() + "\n" +
-        "        <p><a href=\"List?q=team\">Back To List</a></td><td>" + 
-        "        <p><a href=\"UpdateTeam?id=" + tl.getId() + "\">Update Team</a></td><td>" + 
-        "        <p><a href=\"DeleteTeam?id=" + tl.getId() + "\">Delete Team</a><td></tr>\n" + 
+        "        <a href=\"CreateEmployee\">Create Employee</a>\n" +
+        "        <p>First Name: " + tl.getFirstName() + "\n" +
+        "        <p>Last Name: " + tl.getLastName() + "\n" + 
+        "        <p>Title: " + tl.getTitle() + "\n" +
+        "        <p>Hire Date: " + new SimpleDateFormat("dd-MM-yyyy").format(tl.getHireDate()) + "\n" +
+        "        <p><a href=\"List?q=employee\">Back To List</a></td><td>" + 
+        "        <p><a href=\"UpdateEmployee?id=" + tl.getEmpNumber() + "\">Update Employee</a></td><td>" + 
+        "        <p><a href=\"DeleteEmployee?id=" + tl.getEmpNumber() + "\">Delete Employee</a><td></tr>\n" + 
         "        </div>\n" +
         "    </body>\n" +
         "</html>";
