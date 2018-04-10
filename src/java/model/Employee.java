@@ -8,6 +8,7 @@ package model;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
+import javax.persistence.*;
 
 /**
  *
@@ -19,7 +20,12 @@ public class Employee implements Serializable, Comparable<Employee> {
     private String firstName;
     private String lastName;
     private String title;
-    private Integer empNumber;
+    
+    @Id
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @Column(name="emp_number")
+    private int empNumber;
+    
     private Integer team_id;
     private Date hireDate;
     
@@ -37,11 +43,10 @@ public class Employee implements Serializable, Comparable<Employee> {
     }
     
     //Custom constructor
-    public Employee(String firstName, String lastName, String title, Integer empNumber, Integer team_id, Date hireDate) {
+    public Employee(String firstName, String lastName, String title, Integer team_id, Date hireDate) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.title = title;
-        this.empNumber = empNumber;
         this.team_id = team_id;
         this.hireDate = hireDate;
     }

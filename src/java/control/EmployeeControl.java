@@ -88,9 +88,7 @@ public class EmployeeControl {
     
     public static List<Employee> InitialLoad() {
         Employee[] ea = new Employee[3];
-        ea[0] = new Employee("John","Billings","Chief Executive Officer",1001,1,new Date(110,6,13));
-        ea[1] = new Employee("Susan","Blakeley","Field Sales Executive",1321,2,new Date(114,7,21));
-        ea[2] = new Employee("Aaron","Jenkins","Windows Systems Engineer",1285,3,new Date(112,12,18));
+        ea[0] = new Employee("John","Billings","Chief Executive Officer",1,new Date(110,6,13));
         
         List<Employee> tl = Arrays.asList(ea);
         saveRecords(tl);
